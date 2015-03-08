@@ -39,30 +39,44 @@ def title_stripper
   # end
 
 array = []
-
+grossPresent = false
+alreadyHasGross = false
+titlePresent = false
   File.open("data/business.list", "r").each_line do |line|
     # grossPresent = false
     if line.scrub.lstrip.match(title_matcher)
+      titlePresent = true
       title = line.scrub.scan(title_matcher).join.strip
-      puts title
-    end
-    if line.scrub.lstrip.match(gross_matcher)
-        # grossPresent = true
-        gross = line.scrub.scan(gross_matcher)
-        # array << { title: title, gross: gross }
+      if line.scrub.lstrip.match(gross_matcher) == true
+        grossPresent = true
+        gross = line.scrub.scan(gross_matcher).join.strip
+        puts title
         puts gross
-      # elsif grossPresent == false
-        # array << { title: title }
+      end
     end
-      # puts array
+
+    # if grossPresent == true
+    #   # array << { title: title, gross: gross }
+    #   alreadyHasGross = true
+    # else
+    #   grossPresent = false
+    # end
+
+    # if titlePresent == true && grossPresent == false
+    #   puts title
+    # end
+
+    # if titlePresent == true && grossPresent == true
+    #   puts title
+    #   puts gross
+    # end
   end
+
+    puts array
+    # CSV.new("moviegross.csv", "a+") do |csv|
+    #   csv << [title, gross]
+    # end
 end
 
-  title_stripper
+title_stripper
 
-
-  # example code to append to a csv
-
-  # CSV.open("moviegross.csv", "a+") do |csv|
-  #   csv << ["cow", "3","2500"]
-  # end
