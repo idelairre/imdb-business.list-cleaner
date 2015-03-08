@@ -35,37 +35,48 @@ require "pry"
 
 def title_stripper
   title_matcher = /(?<=MV: )(.*?)(?=[(])/
-  title_array = []
-
-  File.open("data/business.list", "r").each_line do |line|
-  if line.scrub.lstrip.match(title_matcher)
-    title = line.scrub.scan(title_matcher).join.strip
-  end
-
-    # CSV.new("moviegross.csv", "a+") do |csv|
-    #   csv << [title, gross]
-    # end
-end
-
-def gross_stripper
   gross_matcher = /(?<=GR: USD )(.*?)(?=[(])/
   seperation_matcher = /[\W]/
-  gross_array = []
+  @title_count = 0
+  @gross_count = 0
+  array = []
   grossPresent = false
+  hasGross = false
 
   File.open("data/business.list", "r").each_line do |line|
-    until grossPresent = true
-      gross = line.scrub.scan(gross_matcher).join.strip
-      gross_array << gross
-      grossPresent = true
-    end
-
-    end
-
-
-
-  end
+    if line.scrub.lstrip.match(title_matcher) && hasGross == false
+		@title = line.scrub.scan(title_matcher).join.strip
+		@title_count += 1
+		@gross_count = 0
+    elsif line.scrub.lstrip.match(title_matcher) && hasGross == true
+		@title = line.scrub.scan(title_matcher).join.strip
+		@title_count += 1
+		@gross_count += 1
+		# puts title
+	# elsif line.scrub.lstrip.match(gross_matcher) && hasGross == true
+	# 	@gross_count += 1
+	elsif line.scrub.lstrip.match(gross_matcher)
+		@gross = line.scrub.scan(gross_matcher).join.strip
+		@gross_count += 1
+		# puts gross
+		# grossPresent = true
+		hasGross = true
+	end
+	if @title_count == 1 && hasGross == true
+		array << {title: @title, gross: @gross}
+		@title_count = 0
+		# grossPresent == false
+		@gross_count = 0
+	# elsif @title_count > @gross_count
+	# 	array << {title: @title, gross: nil}
+	# 	@title_count = 0
+	# 	@gross_count = 0
+	end
+	puts array
+  # puts gross_count
+  # puts title_count
+end
 end
 
 title_stripper
-gross_stripper
+# gross_stripper
