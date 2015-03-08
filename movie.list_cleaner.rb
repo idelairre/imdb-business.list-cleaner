@@ -56,27 +56,27 @@ def stripper
   	elsif line.scrub.lstrip.match(title_matcher) && titlePresent == true
   		@grossPresent = false
     end
-    if @grossPresent == true && @titlePresent == true
-      array << {title: @title, gross: @gross}
-      @grossPresent = false
-      @titlePresent = false
-      # @title_count = 0
-      @gross_count = 0
-  	elsif @titlePresent == true && @gross_count > 1
-  		until titlePresent == false
-  			@gross_count += 1
-  			@gross_array << @gross
-  		end
-  	  array << {title: @title, gross: @gross_array}
-  	  @gross_count = 0
-  	  @grossPresent = false
-  	  @titlePresnt = false
-  	# elsif @titlePresent == true && @grossPresent == false
-   #    array << {title: @title, gross: nil}
-   #    @grossPresent = false
-   #    @titlePresent = false
-   #    # @title_count = 0
-   #    @gross_count = 0
+    if @titlePresent == true && @grossPresent == true && @gross_count > 1
+    	until line.match("")
+			@gross_count += 1
+			@gross_array << @gross
+		end
+			array << {title: @title, gross: @gross_array}
+			@gross_count = 0
+			@grossPresent = false
+			@titlePresnt = false
+	elsif @grossPresent == true && @titlePresent == true
+		array << {title: @title, gross: @gross}
+		@grossPresent = false
+		@titlePresent = false
+		# @title_count = 0
+		@gross_count = 0
+  	elsif @titlePresent == true && @grossPresent == false
+		array << {title: @title, gross: nil}
+		@grossPresent = false
+		@titlePresent = false
+		# @title_count = 0
+		@gross_count = 0
     end
     puts array
   end
