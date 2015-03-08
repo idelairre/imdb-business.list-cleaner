@@ -14,69 +14,58 @@ require "pry"
 
 # find the characters beyond "GR" and match them to the movie "MV"
 
+# string = File.open("data/business.list", "r") { |f| f.read }
+
+# array1 = string.scrub.scan(title_matcher).inject do |memo, title|
+#   memo << { title: title.join.strip }
+# end
+# # puts array1
+
+# array2 = string.scrub.scan(gross_matcher).inject do |memo, gross|
+# memo << { gross: gross.join.strip }
 
 
+# puts array2
+# end
+# array2 = string.scan(gross_matcher).inject([]) do |memo, gross|
+#   memo << {:gross => gross.gsub("\n", '')}
+# end
+
+# compare against the key value pair, if the value for gross isn't nil, add it. ???
 
 def title_stripper
   title_matcher = /(?<=MV: )(.*?)(?=[(])/
-  gross_matcher = /(?<=GR: USD )(.*?)(?=[(])/
+  title_array = []
 
-  # string = File.open("data/business.list", "r") { |f| f.read }
-
-  # array1 = string.scrub.scan(title_matcher).inject do |memo, title|
-  #   memo << { title: title.join.strip }
-  # end
-  # # puts array1
-
-  # array2 = string.scrub.scan(gross_matcher).inject do |memo, gross|
-  # memo << { gross: gross.join.strip }
-
-
-  # puts array2
-  # end
-  # array2 = string.scan(gross_matcher).inject([]) do |memo, gross|
-  #   memo << {:gross => gross.gsub("\n", '')}
-  # end
-
-array = []
-grossPresent = false
-alreadyHasGross = false
-titlePresent = false
   File.open("data/business.list", "r").each_line do |line|
-    # grossPresent = false
-    if line.scrub.lstrip.match(title_matcher)
-      titlePresent = true
-      title = line.scrub.scan(title_matcher).join.strip
-      if line.scrub.lstrip.match(gross_matcher) == true
-        grossPresent = true
-        gross = line.scrub.scan(gross_matcher).join.strip
-        puts title
-        puts gross
-      end
-    end
-
-    # if grossPresent == true
-    #   # array << { title: title, gross: gross }
-    #   alreadyHasGross = true
-    # else
-    #   grossPresent = false
-    # end
-
-    # if titlePresent == true && grossPresent == false
-    #   puts title
-    # end
-
-    # if titlePresent == true && grossPresent == true
-    #   puts title
-    #   puts gross
-    # end
+  if line.scrub.lstrip.match(title_matcher)
+    title = line.scrub.scan(title_matcher).join.strip
   end
 
-    puts array
     # CSV.new("moviegross.csv", "a+") do |csv|
     #   csv << [title, gross]
     # end
 end
 
-title_stripper
+def gross_stripper
+  gross_matcher = /(?<=GR: USD )(.*?)(?=[(])/
+  seperation_matcher = /[\W]/
+  gross_array = []
+  grossPresent = false
 
+  File.open("data/business.list", "r").each_line do |line|
+    until grossPresent = true
+      gross = line.scrub.scan(gross_matcher).join.strip
+      gross_array << gross
+      grossPresent = true
+    end
+
+    end
+
+
+
+  end
+end
+
+title_stripper
+gross_stripper
