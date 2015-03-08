@@ -33,50 +33,53 @@ require "pry"
 
 # compare against the key value pair, if the value for gross isn't nil, add it. ???
 
-def title_stripper
+def stripper
   title_matcher = /(?<=MV: )(.*?)(?=[(])/
   gross_matcher = /(?<=GR: USD )(.*?)(?=[(])/
   seperation_matcher = /[\W]/
   @title_count = 0
   @gross_count = 0
   array = []
-  grossPresent = false
-  hasGross = false
+  @grossPresent = false
+  @titlePresent = false
 
   File.open("data/business.list", "r").each_line do |line|
-    if line.scrub.lstrip.match(title_matcher) && hasGross == false
+    if line.scrub.lstrip.match(title_matcher)
 		@title = line.scrub.scan(title_matcher).join.strip
-		@title_count += 1
-		@gross_count = 0
-    elsif line.scrub.lstrip.match(title_matcher) && hasGross == true
-		@title = line.scrub.scan(title_matcher).join.strip
-		@title_count += 1
-		@gross_count += 1
+		# @title_count += 1
+		@titlePresent = true
 		# puts title
-	# elsif line.scrub.lstrip.match(gross_matcher) && hasGross == true
-	# 	@gross_count += 1
-	elsif line.scrub.lstrip.match(gross_matcher)
+    elsif line.scrub.lstrip.match(gross_matcher)
 		@gross = line.scrub.scan(gross_matcher).join.strip
 		@gross_count += 1
-		# puts gross
-		# grossPresent = true
-		hasGross = true
-	end
-	if @title_count == 1 && hasGross == true
-		array << {title: @title, gross: @gross}
-		@title_count = 0
-		# grossPresent == false
-		@gross_count = 0
-	# elsif @title_count > @gross_count
-	# 	array << {title: @title, gross: nil}
-	# 	@title_count = 0
-	# 	@gross_count = 0
-	end
-	puts array
-  # puts gross_count
-  # puts title_count
-end
+		@grossPresent = true
+  	elsif line.scrub.lstrip.match(title_matcher) && titlePresent == true
+  		@grossPresent = false
+    end
+    if @grossPresent == true && @titlePresent == true
+      array << {title: @title, gross: @gross}
+      @grossPresent = false
+      @titlePresent = false
+      # @title_count = 0
+      @gross_count = 0
+  	elsif @titlePresent == true && @gross_count > 1
+  		until titlePresent == false
+  			@gross_count += 1
+  			@gross_array << @gross
+  		end
+  	  array << {title: @title, gross: @gross_array}
+  	  @gross_count = 0
+  	  @grossPresent = false
+  	  @titlePresnt = false
+  	# elsif @titlePresent == true && @grossPresent == false
+   #    array << {title: @title, gross: nil}
+   #    @grossPresent = false
+   #    @titlePresent = false
+   #    # @title_count = 0
+   #    @gross_count = 0
+    end
+    puts array
+  end
 end
 
-title_stripper
-# gross_stripper
+stripper
