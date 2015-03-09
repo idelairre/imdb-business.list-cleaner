@@ -1,53 +1,62 @@
-require "csv"
+# require "csv"
+# require 'currencies'
 # require "pry"
+
+class Movie
+
+  attr_accessor :title, :total_gross
+
+  def initialize(title)
+    @title = title
+    @total_gross = 0
+  end
+
+  def to_s
+    "movie: #{title}, gross_total: #{total_gross}"
+  end
+end
 
 def stripper
   title_matcher = /(?<=MV: )(.*?)(?=[(])/
   gross_matcher = /(?<=GR: USD )(.*?)(?=[(])/
-  seperation_matcher = /[\W]/
-  @title_count = 0
-  @gross_count = 0
-  array = []
-  @grossPresent = false
-  @titlePresent = false
+  movie = nil
+  movie_start = true
 
   File.open("data/business.list", "r").each_line do |line|
     if line.scrub.lstrip.match(title_matcher)
-		@title = line.scrub.scan(title_matcher).join.strip
-		# @title_count += 1
-		@titlePresent = true
-		# puts title
+      if movie_start == false
+        # movie.save
+        puts "#{movie}"
+      end
+      movie_start = true
+  		title = line.scrub.scan(title_matcher).join.strip
+      movie = Movie.new(title: title, total_gross: 0)
     elsif line.scrub.lstrip.match(gross_matcher)
-		@gross = line.scrub.scan(gross_matcher).join.strip
-		@gross_count += 1
-		@grossPresent = true
-  	elsif line.scrub.lstrip.match(title_matcher) && titlePresent == true
-  		@grossPresent = false
+      movie_start = false
+      currency, total_gross, country = line.split('GR: ').last.split(" ")
+      movie.total_gross += total_gross.gsub(',', '_').to_i
+    	end
     end
-    if @titlePresent == true && @grossPresent == true && @gross_count > 1
-    	until line.match("")
-			@gross_count += 1
-			@gross_array << @gross
-		end
-			array << {title: @title, gross: @gross_array}
-			@gross_count = 0
-			@grossPresent = false
-			@titlePresnt = false
-	elsif @grossPresent == true && @titlePresent == true
-		array << {title: @title, gross: @gross}
-		@grossPresent = false
-		@titlePresent = false
-		# @title_count = 0
-		@gross_count = 0
-  	elsif @titlePresent == true && @grossPresent == false
-		array << {title: @title, gross: nil}
-		@grossPresent = false
-		@titlePresent = false
-		# @title_count = 0
-		@gross_count = 0
-    end
-    puts array
-  end
+
+		# array << {title: @title, gross: @gross_array}
+
+		# @gross_count = 0
+		# @grossPresent = false
+		# @titlePresnt = false
+	# end
+		# if @grossPresent == true && @titlePresent == true
+		# 	array << {title: @title, gross: @gross}
+		# 	@grossPresent = false
+		# 	@titlePresent = false
+		# 	# @title_count = 0
+		# 	@gross_count = 0
+	 #  	elsif @titlePresent == true && @grossPresent == false
+		# 	array << {title: @title, gross: nil}
+		# 	@grossPresent = false
+		# 	@titlePresent = false
+		# 	# @title_count = 0
+		# 	@gross_count = 0
+  #   	end
 end
 
 stripper
