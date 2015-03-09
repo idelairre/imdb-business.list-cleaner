@@ -32,10 +32,10 @@ def stripper
     elsif line.scrub.lstrip.match(gross_matcher)
       movie_start = false
       currency, total_gross, country = line.split('GR: ').last.split(" ")
-        movie.total_gross += total_gross.gsub(',', '_').to_i
-    	end
+      movie.total_gross += total_gross.gsub(',', '_').to_i
     end
-    puts array
+  end
+  puts array
 end
 
 stripper
